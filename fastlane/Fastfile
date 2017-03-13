@@ -1,0 +1,68 @@
+platform :ios do
+
+  desc "Runs all the tests"
+  lane :test do
+    scan
+  end
+
+  desc "Successfully deployed β-Development build..."
+  lane :release_hockey do |options|
+    # build
+    build(options)
+
+    #TODO hockey
+  end
+
+  lane :release_testflight do |options|
+    # build
+    build(options)
+
+    pilot
+  end
+
+  private_lane :build do |options|
+    # increase build number
+    increment_build_number build_number: ENV["CI_BUILD_ID"]
+
+    # create netguru.keychain and add to search path
+    ng_create_keychain
+
+    # add certyficate to netguru.keychain
+    import_certificate(
+      keychain_password: ENV["KEYCHAIN_PASSWORD"],
+      certificate_path: ENV["NG_CERT_PATH"],
+      certificate_password:ENV["NG_CERT_PASSWORD"],
+      log_output:false
+    )
+
+    # download prov profiles for share extension
+    sigh
+
+    # build!
+    gym(use_legacy_build_api: true)
+  end
+
+  private_lane :ng_delete_keychain_safely do |options|
+    keychain_exist = `security list-keychains | grep "$KEYCHAIN_NAME"`
+
+    if !keychain_exist.empty?
+      delete_keychain
+    end
+  end
+
+  private_lane :ng_create_keychain do |options|
+    ng_delete_keychain_safely
+    create_keychain(unlock: true, timeout: false)
+  end
+
+  after_all do |lane|
+    ng_delete_keychain_safely
+  end
+
+  error do |lane, exception|
+    slack(
+      message: exception.message,
+      success: false
+    )
+  end
+end

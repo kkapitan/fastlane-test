@@ -1,0 +1,4 @@
+#include "ProjectName.xcconfig"
+
+OTHER_SWIFT_FLAGS = "-D" "STAGING" "-D" "DEBUG"
+GCC_PREPROCESSOR_DEFINITIONS = DEBUG=1 STAGING=1

@@ -111,7 +111,7 @@ platform :ios do
 end
 ```
 
-Here we are defining platform called `ios` which by its name will consist of lanes specific to iOS system. Inside this platform, we specify lane `test` that simply run `scan` with some arguments. The `desc` keyword here is used to provide additional description for our lane. It's a good practice to provide one.
+Here we define platform called `ios` which by its name will consist of lanes specific to iOS system. Inside this platform, we specify lane `test` that simply run `scan` with some arguments. The `desc` keyword here is used to provide additional description for our lane. It's a good practice to provide one.
 
 You can now run this lane using:
 
@@ -121,8 +121,91 @@ or in general:
 
 `bundle exec fastlane [platform_name] [lane_name]`
 
+For now it looks like we have exchanged one line shell command for six lines or ruby code, but let's look at another example:
 
-#### Environments
+```
+platform :ios do
+  desc "Release to TestFlight"
+  lane :release_testflight do
+    increment_build_number
+
+    import_certificate(
+      keychain_name: "login.keychain"
+      keychain_password: "Passw0rd!",
+      certificate_path: "./artifacts/cert",
+      certificate_password: "Passw0rd!",
+    )
+
+    # download provisioning profiles
+    sigh
+
+    # build
+    gym
+
+    # upload to TestFlight
+    pilot
+  end
+end
+```
+
+In the above we define a lane that:
+* increments number of the build
+* imports certificate to keychain to be used later
+* resolves and downloads any provisioning profiles needed
+* builds the app and codesigns it (with provisioning profiles and certificate supplied in previous steps)
+* uploads the app to TestFlight
+
+This sequence of steps encapsulated by the lane defines a clear and meaningful flow that can now be performed as a single command.
+
+**You have probably noticed that here we specify such sensitive data like keychain/certificate password directly in the `Fastfile`. This is a real security issue that we will deal with in a moment.**
+
+Imagine that in addition to releasing your build via TestFlight, you also need to upload it to some 3rd party service like HockeyApp. If you are using git for version control it may happen that each commit or merge to the master branch triggers the build for HockeyApp, but TestFlight release occurs only when pushing proper tag. Thus we should handle it by defining separate lanes. However if you think about it, both cases have a lot in common - the process of building the app remains unchanged, the only change comes in its destination.
+
+To avoid breaching the DRY principle we can extract the steps responsible for building the app to new private lane:
+
+```
+desc "Build the application"
+private_lane :build do |options|
+  increment_build_number
+
+  import_certificate(
+    keychain_name: "login.keychain"
+    keychain_password: "Passw0rd!",
+    certificate_path: "./artifacts/cert",
+    certificate_password: "Passw0rd!",
+  )
+
+  # download provisioning profiles
+  sigh
+
+  # build
+  gym
+end
+```
+
+And then we can reuse it when defining proper lanes:
+
+```
+desc "Upload to hockey"
+lane :release_hockey do
+  # build the app
+  build
+
+  # upload to HockeyApp
+  hockey
+end
+
+desc "Upload to TestFlight"
+lane :release_testflight do |options|
+  # build the app
+  build
+
+  # upload to TestFlight
+  pilot
+end
+```
+
+#### Environment variables
 
 
 

@@ -46,7 +46,7 @@ To install bundler run:
 
 Then in your project directory create file named `Gemfile` with following contents:
 
-```
+```ruby
 source 'https://rubygems.org'
 gem 'fastlane'
 ```
@@ -102,7 +102,7 @@ Of course the execution is stopped until you answer, which proves to be a proble
 However the real power of fastlane comes into play when using `Fastfile`. `Fastfile` is a ruby file with special structure where you can define `lanes` composed of
 fastlane actions in order you'd like them to be executed. Of course since it's a ruby file you can pretty much use any ruby code here, but most of the time the tools provided by fastlane are sufficient. `Lanes` can also be nested inside `platforms` to give them more usage context. Here is the sample `Fastfile`:
 
-```
+```ruby
 platform :ios do
   desc "Runs all the tests"
   lane :test do
@@ -123,7 +123,7 @@ or in general:
 
 For now it looks like we have exchanged one line shell command for six lines or ruby code, but let's look at another example:
 
-```
+```ruby
 platform :ios do
   desc "Release to TestFlight"
   lane :release_testflight do
@@ -163,7 +163,7 @@ Imagine that in addition to releasing your build via TestFlight, you also need t
 
 To avoid breaching the DRY principle we can extract the steps responsible for building the app to new private lane:
 
-```
+```ruby
 desc "Build the application"
 private_lane :build do |options|
   increment_build_number
@@ -185,7 +185,7 @@ end
 
 And then we can reuse it when defining proper lanes:
 
-```
+```ruby
 desc "Upload to hockey"
 lane :release_hockey do
   # build the app
@@ -210,12 +210,70 @@ Notice that in line `private_lane :build do |options|` we defined additional `op
 
 #### Environment variables
 
+There is more! Each parameter of an action is backed up by an environment variable. You can check available parameters along with their environment variables using:
 
+`bundle exec fastlane action [action_name]`
 
-## Examples [WIP]
+Using environment variables we can extract all parameters from the Fastfile into another file. This can be useful if you intend to use fastlane as a part of your CI process. The number of necessary arguments in this case can be a little overwhelming and specifying them all via Fastfile would only make our flow less readable.
 
-### Performing tests
+There are two types of environment variables depending on their scope. The first ones are variables operating on a global level that means their scope includes each defined lane. These are stored in `.env` or `.env.default` files in the same directory as your `Fastfile`. We can rewrite one of the previous examples using environment variables. This lane:
 
-### Uploading to HockeyApp
+```ruby
+platform :ios do
+  desc "Runs all the tests"
+  lane :test do
+    scan(scheme: "Production", devices: ["iPhone 6"])
+  end
+end
+```
 
-### Uploading to TestFlight
+will end up being:
+
+```ruby
+platform :ios do
+  desc "Runs all the tests"
+  lane :test do
+    scan
+  end
+end
+```
+with `.env` file like:
+
+```ruby
+SCAN_SCHEME="Production"
+SCAN_DEVICES="iPhone 6"
+```
+
+There are also the lane-scoped environment variables. As their name says - these variables are valid only for the lane they are being scoped to. It's worth noting that lane-scoped variables will overwrite the global-scoped ones. This can be useful when handling different app environments like staging or production. Imagine that in the previous example we want to perform tests for staging scheme as well e.g. before submitting the build to HockeyApp. We can reuse the same lane defined above but provide it with different `SCAN_SCHEME`. In order to do that let's create another file called `.env.staging`:
+
+```ruby
+SCAN_SCHEME="Staging"
+```
+
+Now we need to specify which environment variables to load for our lane:
+
+`bundle exec fastlane ios test --env staging`
+
+In general:
+
+`--env [environment_name]`
+
+will read environment variables stored in `.env.[environment_name]`.
+
+The `SCAN_SCHEME` will be now changed to `Staging` and the `SCAN_DEVICES` should still be `iPhone 6` since we didn't overwrite this variable in `.env.staging` file.
+
+The most common pattern is to store any app environment specific values as local-scoped environment variables, while those shared via `.env` or `.env.default`.
+
+## Advanced usage
+
+### Lane context [WIP]
+
+At this point maybe you are wondering - how does it actually work? Especially how does each action interacts with another? We've mentioned in an example above that `sigh` is responsible for downloading provisioning profiles, but how does it pass the gathered data to `gym` so it can then codesign the app properly? There is no explicit communication between these two when you look at the lane implementation. The answer is... the lane context!
+
+### Custom actions
+
+### Ensuring security
+
+### Known limitations
+
+## Troubleshooting

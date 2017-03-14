@@ -36,9 +36,28 @@ Since fastlane is written in Ruby, you can also install it as a gem using:
 
 `gem install fastlane`
 
-*For more thorough guide on how to install or setup fastlane check [official guide](https://github.com/fastlane/fastlane#installation)*
-#### Other
-
-
-
 #### Bundler
+
+The most recommended way of installing fastlane is to leverage the power of bundler. Bundler is a tool that ensures all your ruby dependencies are installed and executed in an isolated environment independent from the machine it's being run on. It gives you the flexibility too bootstrap your project on any machine in no speed, especially convenient if you're using any CI build system like `travis`.
+
+To install bundler run:
+
+`gem install bundler`
+
+Then in your project directory create file named `Gemfile` with following contents:
+
+```
+source 'https://rubygems.org'
+gem 'fastlane'
+```
+
+And then run:
+
+`bundle install`
+
+**From now on each call to fastlane must be prefixed by `bundle exec`**
+
+*Visit [official site of a project](https://bundler.io) to check how to constraint your dependencies on a given version and more.*
+
+#### Other
+*For more thorough guide on how to install or setup fastlane check [official guide](https://github.com/fastlane/fastlane#installation)*

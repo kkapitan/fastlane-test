@@ -196,7 +196,7 @@ lane :release_hockey do
 end
 
 desc "Upload to TestFlight"
-lane :release_testflight do |options|
+lane :release_testflight do
   # build the app
   build
 
@@ -204,6 +204,9 @@ lane :release_testflight do |options|
   pilot
 end
 ```
+
+Notice that in line `private_lane :build do |options|` we defined additional `options` variable. It is a dictionary
+(or hash if you are familiar with ruby) you can use to supply your lane with own parameters. In our case we can specify whether the build should be considered as ad-hoc by `build({adhoc: true})` and then handle this case in implementation of our lane.
 
 #### Environment variables
 

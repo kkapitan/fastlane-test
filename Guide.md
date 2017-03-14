@@ -91,12 +91,38 @@ Since fastlane is a command line tool you can easily run any command via shell (
 
 `bundle exec fastlane scan`
 
-will start a process responsible for performing tests. It will automatically figure out necessary data like your `.xcodeproj` or `.xcworkspace` file, or ask you to resolve any ambiguity faced on its way, e.g which scheme should be used for building the application or what are the devices to run the tests on.
+will start a process responsible for performing the tests. It will automatically figure out necessary data like your `.xcodeproj` or `.xcworkspace` file, or ask you to resolve any ambiguity faced on its way, e.g which scheme should be used for building the application or what are the devices to run the tests on.
 
 Of course the execution is stopped until you answer, which proves to be a problem when working with batched environments like CI systems, where you are not able to interact with the process directly. That's why you can also specify additional parameters to resolve ambiguity at launch:
 
 `bundle exec fastlane scan --scheme Production --device "iPhone6"`
 
+#### Fastfile
+
+However the real power of fastlane comes into play when using `Fastfile`. `Fastfile` is a ruby file with special structure where you can define `lanes` composed of
+fastlane actions in order you'd like them to be executed. Of course since it's a ruby file you can pretty much use any ruby code here, but most of the time the tools provided by fastlane are sufficient. `Lanes` can also be nested inside `platforms` to give them more usage context. Here is the sample `Fastfile`:
+
+```
+platform :ios do
+  desc "Runs all the tests"
+  lane :test do
+    scan(scheme: "Production", devices: ["iPhone 6"])
+  end
+end
+```
+
+Here we are defining platform called `ios` which by its name will consist of lanes specific to iOS system. Inside this platform, we specify lane `test` that simply run `scan` with some arguments. The `desc` keyword here is used to provide additional description for our lane. It's a good practice to provide one.
+
+You can now run this lane using:
+
+`bundle exec fastlane ios test`
+
+or in general:
+
+`bundle exec fastlane [platform_name] [lane_name]`
+
+
+#### Environments
 
 
 

@@ -1,5 +1,35 @@
 # Continuous Delivery with Fastlane
 
+## Table of contents
+
+  * [Fastlane?](#fastlane)
+  * [Installation](#installation)
+      * [Homebrew](#homebrew)
+      * [Gem](#gem)
+      * [Bundler](#bundler)
+      * [Other](#other)
+  * [How to use](#how-to-use)
+      * [Basics](#basics)
+      * [Command line](#command-line)
+      * [Fastfile](#fastfile)
+      * [Environment variables](#environment-variables)
+  * [Chosen tools](#chosen-tools)
+      * [Pilot](#pilot)
+      * [Boarding](#boarding)
+      * [Match](#match)
+      * [Snapshot](#snapshot)
+  * [Advanced usage](#advanced-usage)
+      * [Useful callbacks](#useful-callbacks)
+      * [Lane context](#lane-context)
+      * [Custom actions](#custom-actions)
+      * [Ensuring security](#ensuring-security)
+      * [Integration with Bitrise](#integration-with-bitrise)
+      * [Known limitations](#known-limitations)
+        * [Match](#match-1)
+        * [Gym](#gym)
+  * [Examples](#examples)
+  * [Troubleshooting](#troubleshooting)
+
 ## Fastlane?
 
 Fastlane is an open source set of command line tools created by Felix Krause and managed by Google as a part of Fabric mobile platform. It was initially designed to automate a tedious work that is codesigning and releasing iOS applications, but in the process it evolved into utility belt capable of dealing with work developers face on a daily basis, such as:
@@ -18,7 +48,7 @@ Fastlane is an open source set of command line tools created by Felix Krause and
 
 With little-to-no setup all of the above can be done for you.
 
-## Instalation
+## Installation
 
 First you need to ensure you have latest Xcode command line tools installed:
 
@@ -275,6 +305,20 @@ platform :ios do
 end
 ```
 
+## Chosen tools
+
+### Pilot
+
+### Boarding
+
+### Match
+
+**TODO Write about match**
+
+### Snapshot
+
+**TODO Write about snapshot**
+
 ## Advanced usage
 
 ### Useful callbacks
@@ -353,10 +397,14 @@ However if you for some reason choose not to leverage `match` you'll need to fin
 
 You can write your own fastlane action encapsulating this process for greater reusability among all your projects.
 
-### Known limitations [WIP]
+### Integration with Bitrise
+
+**TODO Write about how to integrate with bitrise**
+
+### Known limitations
 
 #### Match
-**Write about match**
+**TODO Write about issues with**
 
 #### Gym
 

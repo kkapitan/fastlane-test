@@ -339,7 +339,35 @@ end
 <p align=center>
 <em>For more detailed info visit official pilot page <a href="https://github.com/fastlane/fastlane/tree/master/pilot">here</a></em>
 </p>
-a
+
+The purpose of pilot is to upload your build to TestFlight while also managing the associated testers.
+
+If you want to upload your build just execute:
+
+```sh
+bundle exec fastlane pilot upload
+```
+
+It will then ask you about your credentials for your iTunes Connect account alongside the id of an app you want to upload. By default it assumes that the signed `.ipa` file is present in the current directory. You can also specify all necessary parameters either via shell or by defining environment variables as described [here](#how-to-use).
+
+You can add or remove testers one by one:
+
+```sh
+fastlane pilot add [email]
+fastlane pilot remove [email]
+```
+
+Or import all of them from the `.csv` file:
+
+```sh
+fastlane pilot import -c [path_to_csv]
+```
+
+With following format:
+
+```csv
+[name],[surname],[email]
+```
 
 ### Boarding
 <p align=center>

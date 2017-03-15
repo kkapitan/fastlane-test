@@ -52,7 +52,7 @@ With little-to-no setup all of the above can be done for you.
 
 First you need to ensure you have latest Xcode command line tools installed:
 
-```shell
+```sh
 xcode-select --install
 ```
 
@@ -60,14 +60,14 @@ xcode-select --install
 
 You can install fastlane via Homebrew:
 
-```shell
+```sh
 brew cask install fastlane
 ```
 #### Gem
 
 Since fastlane is written in Ruby, you can also install it as a gem using:
 
-```shell
+```sh
 gem install fastlane
 ```
 #### Bundler
@@ -76,7 +76,9 @@ The most recommended way of installing fastlane is to leverage the power of bund
 
 To install bundler run:
 
-`gem install bundler`
+```sh
+gem install bundler
+```
 
 Then in your project directory create file named `Gemfile` with following contents:
 
@@ -86,8 +88,9 @@ gem 'fastlane'
 ```
 
 And then run:
-
-`bundle install`
+```sh
+bundle install
+```
 
 **From now on each call to fastlane must be prefixed by `bundle exec`**
 
@@ -111,25 +114,36 @@ Fastlane consists of independent actions, each responsible for performing specif
 
 To list all available actions use:
 
-`bundle exec fastlane actions`
+```sh
+bundle exec fastlane actions
+```
 
 To check the description or parameters of a given action run:
 
-`bundle exec fastlane action [action_name]`
+```sh
+bundle exec fastlane action [action_name]
+```
 
-You can also try `bundle exec fastlane help` for additional information.
+For additional information you can also try:
+```sh
+bundle exec fastlane help
+```
 
 #### Command line
 
 Since fastlane is a command line tool you can easily run any command via shell (e.g. bash). For example this
 
-`bundle exec fastlane scan`
+```sh
+bundle exec fastlane scan
+```
 
 will start a process responsible for performing the tests. It will automatically figure out necessary data like your `.xcodeproj` or `.xcworkspace` file, or ask you to resolve any ambiguity faced on its way, e.g which scheme should be used for building the application or what are the devices to run the tests on.
 
 Of course the execution is stopped until you answer, which proves to be a problem when working with batched environments like CI systems, where you are not able to interact with the process directly. That's why you can also specify additional parameters to resolve ambiguity at launch:
 
-`bundle exec fastlane scan --scheme Production --device "iPhone6"`
+```sh
+bundle exec fastlane scan --scheme "Production" --device "iPhone6"
+```
 
 #### Fastfile
 
@@ -149,11 +163,15 @@ Here we define platform called `ios` which by its name will consist of lanes spe
 
 You can now run this lane using:
 
-`bundle exec fastlane ios test`
+```sh
+bundle exec fastlane ios test
+```
 
 or in general:
 
-`bundle exec fastlane [platform_name] [lane_name]`
+```sh
+bundle exec fastlane [platform_name] [lane_name]
+```
 
 For now it looks like we have exchanged one line shell command for six lines or ruby code, but let's look at another example:
 
@@ -246,7 +264,9 @@ Notice that in line `private_lane :build do |options|` we defined additional `op
 
 There is more! Each parameter of an action is backed up by an environment variable. You can check available parameters along with their environment variables using:
 
-`bundle exec fastlane action [action_name]`
+```sh
+bundle exec fastlane action [action_name]
+```
 
 Using environment variables we can extract all parameters from the Fastfile into another file. This can be useful if you intend to use fastlane as a part of your CI process. The number of necessary arguments in this case can be a little overwhelming and specifying them all via Fastfile would only make our flow less readable.
 
@@ -286,11 +306,15 @@ SCAN_SCHEME="Staging"
 
 Now we need to specify which environment variables to load for our lane:
 
-`bundle exec fastlane ios test --env staging`
+```sh
+bundle exec fastlane ios test --env staging
+```
 
 In general:
 
-`--env [environment_name]`
+```sh
+--env [environment_name]
+```
 
 will read environment variables stored in `.env.[environment_name]`.
 
@@ -440,8 +464,9 @@ If any of fastlane actions throws an error the additional message is attached wh
 Imagine the following scenario - you've manage to setup your lanes correctly. You are now benefiting from automated delivery system for over a month, your boss is happy and your nerves are happy. You also saved a plenty of time for you and your team to focus on more exciting things! And one day... it crashes. And again. And again. You're retriggering the builds like crazy, but it gives you nothing.
 
 Check if some part of the setup changed. Maybe your certificate or provisioning has expired. Maybe you've changed the version of Xcode - that was the case when upgrading to Xcode 8 and its system of automatic signing. There is also another possibility. Fastlane interacts with Apple Developer Portal which does not have any official API. This portal tends to change a lot and in rare cases it also requires the change in how fastlane handle things internally. It happened few times over past year, but the fastlane team reacts very quickly. Check some GitHub issues to ensure that other developers encounter the same problem and consider upgrading your fastlane version using:
-
-`bundle update fastlane`
+```sh
+bundle update fastlane
+```
 
 It may also happen that Apple Developer Portal is under maintenance - you can check it [here](https://developer.apple.com/system-status/) - in that case just wait for the restore and try then.
 

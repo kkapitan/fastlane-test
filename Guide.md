@@ -32,19 +32,19 @@
 
 ## Fastlane?
 
-Fastlane is an open source set of command line tools created by Felix Krause and managed by Google as a part of Fabric mobile platform. It was initially designed to automate a tedious work that is codesigning and releasing iOS applications, but in the process it evolved into utility belt capable of dealing with work developers face on a daily basis, such as:
+Fastlane is an open source set of command line tools created by Felix Krause and managed by Google as a part of Fabric mobile platform. It was initially designed to automate a tedious work that is codesigning and releasing iOS applications, but in the process it evolved into utility belt, capable of dealing with work developers face on a daily basis, such as:
 
-* Uploading the app along with the screenshots and metadata to AppStore/Google Play
-* Taking screenshots for every device and localization supported
-* Generating and renewing push notification profiles
-* Creating and maintaining iOS code signing certificates
-* Uploading the app to TestFlight and managing testers
-* Uploading the app to any 3rd party service like HockeyApp or Fabric's Beta
-* Building and codesigning the application
-* Performing Unit and UI tests and generating reports based on the results
-* Preparing custom page for tester to sign up for TestFlight build
-* Synchronizing certificates and provisioning profiles for the team
-* ... pretty much anything you can imagine due to its high extensibility
+* Uploading the app along with the screenshots and metadata to AppStore/Google Play.
+* Taking screenshots for every device and localization supported.
+* Generating and renewing push notification profiles.
+* Creating and maintaining iOS code signing certificates.
+* Uploading the app to TestFlight and managing testers.
+* Uploading the app to any 3rd party service like HockeyApp or Fabric's Beta.
+* Building and codesigning the application.
+* Performing Unit and UI tests and generating reports based on the results.
+* Preparing custom page for tester to sign up for TestFlight build.
+* Synchronizing certificates and provisioning profiles for the team.
+* ... pretty much anything you can imagine due to its high extensibility.
 
 With little-to-no setup all of the above can be done for you.
 
@@ -52,20 +52,24 @@ With little-to-no setup all of the above can be done for you.
 
 First you need to ensure you have latest Xcode command line tools installed:
 
-`xcode-select --install`
+```shell
+xcode-select --install
+```
 
 #### Homebrew
 
 You can install fastlane via Homebrew:
 
-`brew cask install fastlane`
-
+```shell
+brew cask install fastlane
+```
 #### Gem
 
 Since fastlane is written in Ruby, you can also install it as a gem using:
 
-`gem install fastlane`
-
+```shell
+gem install fastlane
+```
 #### Bundler
 
 The most recommended way of installing fastlane is to leverage the power of bundler. Bundler is a tool that ensures all your ruby dependencies are installed and executed in an isolated environment independent from the machine it's being run on. It gives you the flexibility too bootstrap your project on any machine in no time, especially convenient if you're using any CI build system like `travis`.

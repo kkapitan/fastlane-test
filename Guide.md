@@ -277,14 +277,64 @@ end
 
 ## Advanced usage
 
-### Lane context [WIP]
+### Lane context
 
-At this point maybe you are wondering - how does it actually work? Especially how does each action interacts with another? We've mentioned in an example above that `sigh` is responsible for downloading provisioning profiles, but how does it pass the gathered data to `gym` so it can then codesign the app properly? There is no explicit communication between these two when you look at the lane implementation. The answer is... the lane context!
+At this point maybe you are wondering - how does it actually work? Especially how does each action interacts with another? We've mentioned in one of examples that `sigh` is responsible for downloading provisioning profiles, but how does it pass the gathered data to `gym` so it can then codesign the app properly? There is no explicit communication between these two when you look at the lane implementation. The answer is... the lane context!
+
+Lane context is a shared dictionary (or hash) used to store and manage the side effects of each action such as the data gathered in the process of execution. Accessing the lane context is possible via this syntax:
+
+```ruby
+Actions.lane_context[SharedValues::VALUE_NAME]
+```
+
+Since each step depends on the effects of the previous one, by modifying particular entries in the lane context you can act as a middle-man or omit some steps entirely, given that you will provide necessary values by yourself.
 
 ### Custom actions
 
+As it was mentioned before, fastlane was designed to be a highly extensible tool. That's why it gives you the ability to create your own custom actions. However before you do that it is advised to check if any of the base actions will suffice for your particular use case. Fastlane has a huge open source community devoted to extend its capabilities as lots and lots of actions created by external developers are being merged into the default set. It is usually better to use some production ready and battle tested tool than making it from scratch.  
+
+So you've done your research and still you are certain that a custom action is what to aim for. Start with:
+
+`bundle exec fastlane new_action`
+
+After entering your action's name fastlane will generate the template at `fastlane/actions/[action_name].rb` that you need to fill. Alongside the general implementation you'll have to provide it with thorough description of how to interact with your action and what are the effects of the execution.
+
+You can use it this action in the `Fastfile` just like any other by calling its name.
+
 ### Ensuring security
 
-### Known limitations
+As we have mentioned before
+
+### Known limitations [WIP]
+
+#### Match
+**Write about match**
+
+#### Sigh
+
+**Write about automated Xcode 8**
+
+
+## Examples
+
+You can find a lot of examples [here](https://github.com/fastlane/examples). All of the fastlane setups there are already being used in production. If you are looking for a particular case there is a detailed description of each setup in `README.md`.
 
 ## Troubleshooting
+
+Fastlane automates a lot - still this is just a tool to help you in a rather complicated process of managing/releasing your application. Due to that complexity it is common to encounter some obstacles on your way, especially if you are just starting your adventure with fastlane. The important part here is to know how to deal with them smoothly.
+
+First of all ensure you understand what you are trying to achieve. If this is a release - check if you are familiar with the process of building and codesigning your application. Fastlane can automate many things, but remember that you are the "brains" behind the process. In this case knowledge is crucial - if you catch yourself blindly updating `Fastfile` with more and more code, hoping it will eventually work, consider taking a break and think about the goal. How would you do it by hand? Does the `Fastfile` reflect your intention?
+
+Fastlane is very well documented. Most of variables and actions are backed by meaningful and clear description. However if you have any doubts or you're wondering if some kind of operation is supported or maybe you want to understand a little better how things work, a good place to start is the documentation [here](https://docs.fastlane.tools/). If you have some particular use case in mind you can also check the examples [here](https://github.com/fastlane/examples).
+
+If any of fastlane actions throws an error the additional message is attached which sometimes can direct you right on the point. Alongside the error description fastlane usually provides you with links to GitHub issues which might address your problem. Take some time to get familiar with them. You can also search for issues on GitHub on your own. Fastlane has a great community willing to help and there is a high chance that the problem you are facing has already been solved in the past.
+
+Imagine the following scenario - you've manage to setup your lanes correctly. You are now benefiting from automated delivery system for over a month, your boss is happy and your nerves are happy. You also saved a plenty of time for you and your team to focus on more exciting things! And one day... it crashes. And again. And again. You're retriggering the builds like crazy, but it gives you nothing.
+
+Check if some part of the setup changed. Maybe your certificate or provisioning has expired. Maybe you've changed the version of Xcode - that was the case when upgrading to Xcode 8 and its system of automatic signing. There is also another possibility. Fastlane interacts with Apple Developer Portal which does not have any official API. This portal tends to change a lot and in rare cases it also requires the change in how fastlane handle things internally. It happened few times over past year, but the fastlane team reacts very quickly. Check some GitHub issues to ensure that other developers encounter the same problem and consider upgrading your fastlane version using:
+
+`bundle update fastlane`
+
+It may also happen that Apple Developer Portal is under maintenance - you can check it [here](https://developer.apple.com/system-status/) - in that case just wait for the restore and try then.
+
+If and only if all of the above fails you can create an issue detailing your problem on [GitHub](https://github.com/fastlane/fastlane/issues). Fill the issue template and follow the checklist there. Remember to be polite and use proper language - everybody likes working in kind and healthy environment. This increases your chances to be noticed and provided with necessary help.

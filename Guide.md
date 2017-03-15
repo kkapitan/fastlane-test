@@ -336,8 +336,28 @@ end
 ## Chosen tools
 
 ### Pilot
+<p align=center>
+<em>For more detailed info visit official pilot page <a href="https://github.com/fastlane/fastlane/tree/master/pilot">here</a></em>
+</p>
+a
 
 ### Boarding
+<p align=center>
+<em>For more detailed info visit official boarding page <a href="https://github.com/fastlane/boarding">here</a></em>
+</p>
+
+Boarding is a tool used to setup custom page for your TestFlight testers to sign up. It gives the possibility to add testers in a reactive-like manner - instead of specifying emails by yourself, you can share the page with your testers, allowing them to signup on their own.
+
+To setup this page you need to an account on `Heroku`. Then the only thing to do is to fill the data [here](https://www.heroku.com/deploy?template=https://github.com/fastlane/boarding).
+
+Boarding will automatically figure out the rest and create a page. It is also possible to use your own template which required forking the boarding github repository. The files:
+
+* `invite_controller.rb`
+* `invite/index.html.erb`
+
+are the entry point for your custom design.
+
+The nice addition here is a possibility to track the visitors via Google Analytics out of the box.
 
 ### Match
 

@@ -310,10 +310,18 @@ As we have mentioned before
 #### Match
 **Write about match**
 
-#### Sigh
+#### Gym
 
-**Write about automated Xcode 8**
+Since Xcode 8 introduced new system of automatic signing it happens that sometimes this interferes with the work done by fastlane. That makes following error `Code signing is required for product type 'Application' in SDK 'iOS 10.x'` appear randomly while building the app via `gym`. To avoid this heisen-issue you may turn off the automatic signing in Xcode and specify the following in project's `.xcconfig` files related to the scheme you're building.
 
+```ruby
+PROVISIONING_PROFILE_SPECIFIER = <PROVISIONING_PROFILE_NAME>
+DEVELOPMENT_TEAM = <TEAM_ID>
+```
+
+*Note that you need to specify the provisioning profile's name, not UUID*
+
+The other solution is to use `match` as it handles this case for you.
 
 ## Examples
 

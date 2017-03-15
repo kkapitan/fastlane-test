@@ -277,6 +277,38 @@ end
 
 ## Advanced usage
 
+### Useful callbacks
+
+A bunch of useful callbacks:
+```ruby
+# invoked at the start of execution
+before_all do |lane, options|
+  ...
+end
+
+# invoked at the start of execution of a lane
+before_each do |lane, options|
+  ...
+end
+
+# invoked at the end of successful execution
+after_all do |lane, options|
+  ...
+end
+
+# invoked at the end of successful execution of a lane
+after_each do |lane, options|
+  ...
+end
+
+# invoked if an error is thrown
+error do |lane, exception, options|
+  ...
+end
+```
+
+You can use them to clean build artifacts or to send notification that a given build resulted with success/error - for example via slack.
+
 ### Lane context
 
 At this point maybe you are wondering - how does it actually work? Especially how does each action interacts with another? We've mentioned in one of examples that `sigh` is responsible for downloading provisioning profiles, but how does it pass the gathered data to `gym` so it can then codesign the app properly? There is no explicit communication between these two when you look at the lane implementation. The answer is... the lane context!
@@ -303,7 +335,23 @@ You can use it this action in the `Fastfile` just like any other by calling its 
 
 ### Ensuring security
 
-As we have mentioned before
+As we have mentioned before specifying the sensitive data directly in your `Fastfile` or as an entry in one of the files from `.env` family is a serious security breach.
+
+If you intend to use fastlane on your local machine you may use tools like [`cocoapods-keys`](https://github.com/orta/cocoapods-keys) to store your keys securely using keychain. You can also use it as a part of your CI system, but then it searches for the keys in the environment variables you set as a part of the CI configuration.
+
+Part of the process requires you to specify the certificate to sign your application with. If you use version control **DO NOT** include your certificate to the set of versioned files, especially if you use services like GitHub to store your repository as this will expose your data to the public. For the CI purpose, to handle the issue of providing fastlane with the certificate you can use its own tool `match`.
+
+However if you for some reason choose not to leverage `match` you'll need to find another way. You can use [Google Cloud Platform](https://cloud.google.com/) and the tool it's providing - `gsutil`. Using `gsutil` you can securely upload/download your data to be stored as a buckets in the cloud. In particular it may look like that:
+
+* On your local machine:
+  1. Prepare the folder with the certificate. You can also put here additional file (e.g `.env.ci`) with some protected environment variables (like keychain password or name of the certificate).
+  2. Upload it to the Google Cloud Platform using `gsutil`.
+* As a part of CI configuration:
+  1. Setup environment variables necessary to authorize and gain access to the uploaded bucket.
+  2. Authorize and download the bucket via `gsutil`.
+  3. Use `source` command to inject the environment variables specified in `.env.ci` file to current shell.
+
+You can write your own fastlane action encapsulating this process for greater reusability among all your projects.
 
 ### Known limitations [WIP]
 

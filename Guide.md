@@ -264,6 +264,17 @@ The `SCAN_SCHEME` will be now changed to `Staging` and the `SCAN_DEVICES` should
 
 The most common pattern is to store any app environment specific values as local-scoped environment variables, while those shared via `.env` or `.env.default`.
 
+To access the contents of environment variable explicitly you can use `ENV["name_of_the_variable"]` inside `Fastfile`. It's a common case when you are using custom variables.
+
+```ruby
+platform :ios do
+  desc "Runs all the tests"
+  lane :test do
+    scan(scheme: ENV["CUSTOM_VARIABLE_SPECIFYING_SCHEME"])
+  end
+end
+```
+
 ## Advanced usage
 
 ### Lane context [WIP]

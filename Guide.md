@@ -357,10 +357,11 @@ fastlane pilot add [email]
 fastlane pilot remove [email]
 ```
 
-Or import all of them from the `.csv` file:
+Or import/export all of them from/to the `.csv` file:
 
 ```sh
 fastlane pilot import -c [path_to_csv]
+fastlane pilot export -c [path_to_write_file]
 ```
 
 With following format:

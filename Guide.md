@@ -16,6 +16,7 @@
   * [Chosen tools](#chosen-tools)
       * [Pilot](#pilot)
       * [Boarding](#boarding)
+      * [Cert](#cert)
       * [Match](#match)
       * [Snapshot](#snapshot)
   * [Advanced usage](#advanced-usage)
@@ -25,7 +26,9 @@
       * [Ensuring security](#ensuring-security)
       * [Integration with Bitrise](#integration-with-bitrise)
       * [Known limitations](#known-limitations)
+        * [Cert](#cert-1)
         * [Match](#match-1)
+        * [Snapshot](#snapshot-1) 
         * [Gym](#gym)
   * [Examples](#examples)
   * [Troubleshooting](#troubleshooting)
@@ -108,6 +111,7 @@ bundle install
 Fastlane consists of independent actions, each responsible for performing specific task. The most popular ones are:
 
 * `scan` - performs UI/Unit tests for your application
+* `cert` - provides you with signing certificates suitable for your build
 * `sigh` - provides you with provisioning files suitable for your build
 * `gym` - builds and codesigns your app
 * `pilot` - submits your app to TestFlight
@@ -388,13 +392,78 @@ are the entry point for you to modify.
 
 The nice addition here is a possibility to track the visitors via Google Analytics out of the box.
 
+### Cert
+<p align=center>
+<em>For more detailed info visit official boarding page <a href="https://github.com/fastlane/fastlane/tree/master/cert">here</a></em>
+</p>
+What it is?
+
+Cert is a tool for downloading existing or create a new signing certifacte and working with locally installed for different enviroments.
+
+It is working great with an another `Fastlane` tool `sigh`.
+
+The most easiest way of using `cert` is to create lane with it.
+
+```ruby
+  desc "Download signing certyficate"
+  lane :cert_test do |options|
+    cert
+  end
+```
+
+And call
+
+``sh
+bundle exec fastlane ios cert_test
+``
+
+But in that case, `cert` will ask about your Apple ID, password and throw an outputted files into the project's folder. We can fix asking about ID and tell where an output files should be located by passing an argument to `cert`.
+
+```ruby
+  desc "Download signing certyficate"
+  lane :cert_test do |options|
+    cert (
+      username: "my@apple.id"
+      output_path: "./fastlane/cert",
+    )
+  end
+```
+
+But what about password? It can be stored in .env var `FASTLANE_PASSWORD` what is more `username` and `output_path` can be and should be stored in .env file.
+
+To read more about `.env` files read [environment variables](#environment-variables)
+
+Let say we have a `.env.staging` file
+
+```
+CERT_USERNAME="blazej@wdowikowski.pl"
+CERT_DEVELOPMENT=true
+CERT_OUTPUT_PATH="./fastlane/cert"
+FASTLANE_PASSWORD = "<PASSWORD>"
+```
+
+```ruby
+  desc "Download signing certyficate"
+  lane :cert_test do |options|
+    cert
+  end
+```
+
+And finally call
+
+``sh
+bundle exec fastlane ios cert_test --env staging
+``
+
 ### Match
 
-**TODO Write about match**
+What it is? Why it could be use instead of cert&sign
+how you use it?
 
 ### Snapshot
 
-**TODO Write about snapshot**
+What it is?
+how you use it?
 
 ## Advanced usage
 
@@ -480,8 +549,15 @@ You can write your own fastlane action encapsulating this process for greater re
 
 ### Known limitations
 
+#### Cert
+**TODO Write about issues with Cert**
+Not founded yet.
+
 #### Match
-**TODO Write about issues with**
+**TODO Write about issues with match**
+
+#### Snapshot
+**TODO Write about issues with snapshot**
 
 #### Gym
 

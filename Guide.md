@@ -16,6 +16,7 @@
   * [Chosen tools](#chosen-tools)
       * [Pilot](#pilot)
       * [Boarding](#boarding)
+      * [Deliver](#deliver)
       * [Match](#match)
       * [Snapshot](#snapshot)
   * [Advanced usage](#advanced-usage)

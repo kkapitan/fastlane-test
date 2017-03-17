@@ -10,7 +10,7 @@ platform :ios do
     # build
     build(options)
 
-    #TODO hockey
+    hockey
   end
 
   lane :release_testflight do |options|

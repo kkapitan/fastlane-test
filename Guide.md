@@ -432,7 +432,7 @@ To check what `Deliverfile` is capable of go [here](https://github.com/fastlane/
 
 ### Cert
 <p align=center>
-<em>For more detailed info visit official boarding page <a href="https://github.com/fastlane/fastlane/tree/master/cert">here</a></em>
+<em>For more detailed info visit official cert page <a href="https://github.com/fastlane/fastlane/tree/master/cert">here</a></em>
 </p>
 What it is?
 
@@ -440,7 +440,7 @@ Cert is a tool for downloading existing or create a new signing certifacte and w
 
 It is working great with an another `Fastlane` tool `sigh`.
 
-The most easiest way of using `cert` is to create lane with it.
+The easiest way of using `cert` is to create the lane with it.
 
 ```ruby
   desc "Download signing certyficate"
@@ -494,14 +494,125 @@ bundle exec fastlane ios cert_test --env staging
 ``
 
 ### Match
+<p align=center>
+<em>For more detailed info visit official match page <a href="https://github.com/fastlane/fastlane/tree/master/match">here</a></em>
+</p>
 
-What it is? Why it could be use instead of cert&sign
-how you use it?
+Match is a newer approach to iOS code signing. If you want to read more about new approach and why you should use it, visit guide [here](https://codesigning.guide/). 
+
+`match` is like `cert&sigh++`:
+ 🔄 Automatically sync your iOS keys and profiles across all your team members using git
+ 📦 Handle all the heavy lifting of creating and storing your certificates and profiles
+ 💻 Setup codesigning on a new machine in under a minute
+ 🎯 Designed to work with apps with multiple targets and bundle identifiers
+ 🔒 You have full control over your files and Git repo, no third party service involved
+ ✨ Provisioning profile will always match the correct certificate
+ 💥 Easily reset your existing profiles and certificates if your current account has expired or invalid profiles
+ ♻️  Automatically renew your provisioning profiles to include all your devices using the `--force` option
+ 👥 Support for multiple Apple accounts and multiple teams
+ * ✨ Tightly integrated with fastlane to work seamlessly with gym and other build tools
+
+It's more comprehensive tool than `cert` and `sigh` and even if you and your team are not going to use other `Fastlane` tools. Using `match` itself is worth of considering.
+
+The easiest way of using `match` is to create a lane for ex. `match_test`
+
+```ruby
+  desc "Sync signing certificate & provisioning profile with match"
+  lane :match_test do |options|
+    match
+  end
+```
+
+But as well since we did not provide information about URL to the git repository on which files will be stored, Apple ID and password. `Fastlane` will ask us about it. As always encoding such data is not only inconvenient but also is a serious security breach.
+
+So again we are using `.env.staging` file
+
+```
+MATCH_USERNAME="<APPLE_ID>"
+MATCH_GIT_URL="<GIT_URL>"
+MATCH_GIT_BRANCH="master"
+MATCH_TYPE="development"
+MATCH_APP_IDENTIFIER="<BUNDLE_ID>"
+FASTLANE_TEAM_ID="<TEAM_ID>"
+```
+
+After run
+
+```sh
+bundle exec fastlane ios match_test --env staging
+```
+match will do several actions:
+  1. clone the repository
+  2. match certificate and profile in the repository with those in Dev Portal. If they are not, a new one will be created with `cert` and `sigh`
+  3. download and push newly created files to repository if needed
+
+The obvious benefit of using `match` is that every developer can have access to required certificates without having access to Dev Portal. One more advantage over `cert` and `sigh` is that files are not stored locally but on the remote private repository. 
+
 
 ### Snapshot
+<p align=center>
+<em>For more detailed info visit official snapshopt page <a href="https://github.com/fastlane/fastlane/tree/master/snapshot">here</a></em>
+</p>
 
-What it is?
-how you use it?
+Snapshot is a tool for genrating loclizaded screenshots for iOS and tvOS devices. Which can be easely framaed with [frameit](https://github.com/fastlane/fastlane/tree/master/frameit) and uploaded to iTunes Connect with [delivery](#delivery). To use snapshot you have to have UI Tests in your application.
+
+
+The easiest way of using `snapshot` is to create a lane `snapshot_test`
+
+In project's folder init snapshot
+
+```sh
+bundler exec fastlane snapshot init
+```
+
+That will create `SnapshotHelper` helper classes, which will be used to create snapshots during a test, and `Snapfile` which we will be using because not all arguments can be passed through env vars.
+
+First of all, add `SnapshotHelper.swift` to your UI Test target.
+
+```ruby
+  desc "Capture screenshots"
+  lane :match_test do |options|
+    snapshot
+  end
+```
+
+Then edit `Snapfile`
+
+```ruby
+devices([
+  "iPhone 6",
+  "iPhone 6 Plus",
+  "iPhone 5",
+  "iPad Pro (12.9 inch)",
+  "iPad Pro (9.7 inch)"
+])
+
+languages([
+  "en-US",
+  "de-DE",
+  "it-IT",
+  ["pt", "pt_BR"], # Portuguese with Brazilian locale
+  "pl-PL"
+])
+
+scheme "FastlaneTest-Staging"
+```
+
+Add `snapshot` method in places you desire
+
+```swift
+func testScreenshots() {
+        let app = XCUIApplication()
+        snapshot("Mainscreen")
+        app.buttons.element(boundBy: 0).tap()
+        snapshot("View A")
+        app.buttons.element(boundBy: 0).tap()
+        app.buttons.element(boundBy: 1).tap()
+        snapshot("View B")
+    }
+```
+
+Start lane and take a ☕️  break because it will take a while. As the result in `./fastlane/screenshots/screenshots.html should be opened in browser and screenshots should be in appropriate folder. Now is straight forward way to use `frameit` and finaly `delivery`.
 
 ## Advanced usage
 
@@ -563,7 +674,9 @@ You can use this action in the `Fastfile` just like any other by calling its nam
 
 ### Ensuring security
 
-As we have mentioned before specifying the sensitive data directly in your `Fastfile` or as an entry in one of the files from `.env` family is a serious security breach.
+As we have mentioned before specifying the sensitive data directly in your `Fastfile` or as an entry in one of the files from `.env` family is a serious security breach if they are stored in repository.
+
+The quickest win here is to store `.env` files into **1Password** storeage or use other external storage for ex. **Google Cloud Platform**.
 
 If you intend to use fastlane on your local machine you may use tools like [`cocoapods-keys`](https://github.com/orta/cocoapods-keys) to store your keys securely using keychain. You can also use it as a part of your CI system, but then it searches for the keys in the environment variables you set as a part of the CI configuration.
 
@@ -588,14 +701,15 @@ You can write your own fastlane action encapsulating this process for greater re
 ### Known limitations
 
 #### Cert
-**TODO Write about issues with Cert**
 Not founded yet.
 
 #### Match
-**TODO Write about issues with match**
+
+It is not so unusual when for some reason match will want to recreate certificate. In most of the cases you will get error `Could not create another Development certificate, reached the maximum number of available Development certificates.`. Do not panic, just look in to the list of certificates in Dev Portal. Search fo duplicated certificate and delete it.
 
 #### Snapshot
-**TODO Write about issues with snapshot**
+
+Since snapshot is using a simulator, during creating snapshots you can not use a simulator. Of course, this is not an issue if you run it on CI like `Bitrise`.
 
 #### Gym
 

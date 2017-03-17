@@ -10,7 +10,7 @@ platform :ios do
     # build
     build(options)
 
-    hockey
+    #TODO hockey
   end
 
   lane :release_testflight do |options|
@@ -20,11 +20,19 @@ platform :ios do
     pilot
   end
 
-  desc "Download signing certyficate"
+  desc "Download signing certificate & provisioning profile with cert & sigh"
   lane :cert_test do |options|
     cert
-    sign
-    gym
+  end
+
+  desc "Sync signing certificate & provisioning profile with match"
+  lane :match_test do |options|
+    match
+  end
+
+  desc "Capture screenshots"
+  lane :snapshot_test do |options|
+    snapshot
   end
 
   private_lane :build do |options|

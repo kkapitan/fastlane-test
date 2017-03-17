@@ -1,0 +1,15 @@
+
+/* Class = "UIButton"; normalTitle = "View A"; ObjectID = "6BU-LW-vSJ"; */
+"6BU-LW-vSJ.normalTitle" = "Ansicht A";
+
+/* Class = "UILabel"; text = "Test Project :)"; ObjectID = "6kj-oW-vOh"; */
+"6kj-oW-vOh.text" = "Test Projekt :)";
+
+/* Class = "UIButton"; normalTitle = "View B"; ObjectID = "Cz5-Pw-Ii6"; */
+"Cz5-Pw-Ii6.normalTitle" = "Ansicht B";
+
+/* Class = "UIViewController"; title = "View A"; ObjectID = "DUm-YU-67a"; */
+"DUm-YU-67a.title" = "Ansicht A";
+
+/* Class = "UIViewController"; title = "View B"; ObjectID = "riB-TE-BA4"; */
+"riB-TE-BA4.title" = "Ansicht B";

@@ -16,6 +16,7 @@
   * [Chosen tools](#chosen-tools)
       * [Pilot](#pilot)
       * [Boarding](#boarding)
+      * [Deliver](#deliver)
       * [Cert](#cert)
       * [Match](#match)
       * [Snapshot](#snapshot)
@@ -391,6 +392,43 @@ Boarding will automatically figure out the rest and create a page. It is also po
 are the entry point for you to modify.
 
 The nice addition here is a possibility to track the visitors via Google Analytics out of the box.
+
+### Deliver
+<p align=center>
+<em>For more detailed info visit official deliver page <a href="https://github.com/fastlane/fastlane/tree/master/deliver">here</a></em>
+</p>
+
+You can use deliver to automate the process of releasing your app via AppStore. Firstly run -
+
+```sh
+bundle exec fastlane deliver init
+```
+
+and follow the instructions there. You will be requested for iTunes Connect credentials and identifier of your app. Deliver will create folders like `./fastlane/metadata` and `./fastlane/screenshots`.
+
+You should store all the screenshots to upload in the latter while the former should contain the metadata needed. Both can also be nested in additional folders indicating supported localization e.g. `./fastlane/metadata/en-US` is there to store the metadata in english while `./fastlane/screenshots/de-DE` is for the screenshots provided to the german users.
+
+You can automate generating screenshots for every localization using [snapshot](#snapshot).
+
+If you want to just submit your metadata use:
+
+```sh
+bundle exec fastlane deliver
+```
+
+If you however intend to upload new version for review type:
+
+```sh
+bundle exec fastlane deliver --ipa "path_to_ipa" --submit_for_review
+```
+
+If you intend to use deliver as a part of your CI ecosystem you can also leverage the power of `Deliverfile`. `Deliverfile` is a ruby file you can use to specify all necessary parameters instead of passing them directly to your shell command. By specifying `Deliverfile` you can omit the initialization command invoking just
+
+```sh
+bundle exec fastlane deliver
+```
+
+To check what `Deliverfile` is capable of go [here](https://github.com/fastlane/fastlane/blob/master/deliver/Deliverfile.md)
 
 ### Cert
 <p align=center>

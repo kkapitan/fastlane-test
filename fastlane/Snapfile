@@ -1,0 +1,17 @@
+devices([
+  "iPhone 6",
+  "iPhone 6 Plus",
+  "iPhone 5",
+  "iPad Pro (12.9 inch)",
+  "iPad Pro (9.7 inch)"
+])
+
+languages([
+  "en-US",
+  "de-DE",
+  "it-IT",
+  ["pt", "pt_BR"], # Portuguese with Brazilian locale
+  "pl-PL"
+])
+
+scheme "FastlaneTest-Staging"
